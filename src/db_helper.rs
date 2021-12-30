@@ -56,7 +56,7 @@ impl DbHelper{
     pub fn insert_event(&self, event: &Event) -> Result<usize>{
         info!("insert_event: {:?}", event);
         let event_hash = event.hash();
-        let mut stmt = self.conn.prepare("INSERT INTO events (
+        let mut stmt = self.conn.prepare("INSERT OR IGNORE INTO events (
             event_id, movie_name, venue_code, date_string
         ) VALUES (?,?,?,?)").unwrap();
         stmt.execute([event_hash, 
@@ -65,7 +65,7 @@ impl DbHelper{
             event.date_string.to_string()])
     }
 
-        pub fn remove_event(&self, event: &Event) -> Result<usize>{
+    pub fn remove_event(&self, event: &Event) -> Result<usize>{
         info!("remove_event: {:?}", event);
         let event_hash = event.hash();
 
@@ -85,18 +85,12 @@ impl DbHelper{
         res
     }
 
-    pub fn _is_event_present(&self, event: &Event) -> Result<bool>{
-        let event_hash = event.hash();
-        let mut stmt = self.conn.prepare("SELECT TOP 1 1 FROM events WHERE event_id = ?").unwrap();
-        stmt.query_row([event_hash], |row| row.get(0))
-    }
-
     pub fn insert_user(&self, chat_id: i64, event: &Event) -> Result<usize>{
         info!("insert_user: chat_id: {}, event: {:?}", chat_id, event);
         let event_hash = event.hash();
         // Add event if not present
         self.insert_event(event)?;
-        let mut stmt = self.conn.prepare("INSERT INTO event_users (
+        let mut stmt = self.conn.prepare("INSERT OR IGNORE INTO event_users (
             event_id, chat_id
         ) VALUES (?,?)").unwrap();
         stmt.execute([event_hash, chat_id.to_string()])
@@ -153,10 +147,8 @@ impl DbHelper{
 
     pub fn insert_venue(&self, venue_code: &str, venue_name: &str) -> Result<usize>{
         info!("insert_venue: {:?}, {:?}", venue_code, venue_name);
-        let mut stmt = self.conn.prepare("INSERT INTO venues (venue_code, venue_name) VALUES (?,?)").unwrap();
-        let res = stmt.execute([venue_code, venue_name]);
-        println!("{:#?}",res);
-        res
+        let mut stmt = self.conn.prepare("REPLACE INTO venues (venue_code, venue_name) VALUES (?,?)").unwrap();
+        stmt.execute([venue_code, venue_name])
     }
 
     pub fn get_venue_name(&self, venue_code: &str) -> Result<String>{

@@ -71,6 +71,7 @@ async fn run() {
                                         Ok(()) => {},
                                         Err(e) => {
                                             error!("Error in /list_locations: {}", e);
+                                            dbg!(e);
                                         }
                                     }
                                 },
@@ -86,6 +87,7 @@ async fn run() {
                                         Ok(()) => {},
                                         Err(e) => {
                                             error!("Error in /list_venues: {}", e);
+                                            dbg!(e);
                                         }
                                     };
                                 },
@@ -106,11 +108,13 @@ async fn run() {
                                         Ok(()) => {},
                                         Err(e) => {
                                             error!("Error in /wl: {}", e);
+                                            dbg!(e);
                                         }
                                     }                        
                                 },
                                 _ => {
                                     // Send help message of available commands
+                                    info!("UNKNOWN MESSAGE : {}",command);
                                     controller.send_help_message(chat_id).await;
                                 }
                             }

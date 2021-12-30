@@ -86,7 +86,7 @@ impl Controller{
             Ok(_) => {},
             Err(e) => {
                 error!("Error while notifying enrollment success : {:?}", e);
-                return;
+                dbg!(e);
             }
         };
     }
@@ -132,6 +132,7 @@ impl Controller{
             Ok(()) => {},
             Err(e) => {
                 error!("Error in sending message using TgBot: {}", e);
+                dbg!(e);
             }
         }
     }
@@ -166,10 +167,10 @@ impl Controller{
     // Does a check if the events in waiting list have shows now
     pub async fn poll_bms(&mut self){
         info!("poll_bms called at {}", chrono::Local::now());
+        let waiting_list = self.db_helper.get_all_events_and_users().unwrap();
         // For each event in waiting list
         // Make request using venue code and date
         // If movie is present in response, notify all users in waiting list
-        let waiting_list = self.db_helper.get_all_events_and_users().unwrap();
         for event in waiting_list.keys(){
             let movie_name = &event.movie_name;
             let venue_code = &event.venue_code;
