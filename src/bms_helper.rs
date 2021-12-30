@@ -1,5 +1,5 @@
 use crate::utils::{parse_date_string,get_date_code, get_timestamp_as_millisecond};
-
+use std::env;
 use reqwest::Error;
 
 // Handles API calls to BMS private API and returns formatted response
@@ -14,10 +14,13 @@ use log::{info,warn};
 
 impl BmsHelper{
     pub fn new()->BmsHelper{
+        let app_version = env::var("BMS_APP_VERSION").expect("BMS_APP_VERSION not set");
+        let mut app_version_code = app_version.replace(".", "");
+        app_version_code.push_str("0");
         BmsHelper{
             // TODO : Update app version, code - play store version
-            app_version : "9.6.2".to_string(),
-            app_version_code : "9620".to_string(),
+            app_version : app_version,
+            app_version_code : app_version_code,
             bms_id_prefix : "1.58091598.".to_string(),
             token : "67x1xa33b4x422b361ba".to_string()
         }
