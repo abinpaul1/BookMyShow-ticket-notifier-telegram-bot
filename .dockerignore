@@ -1,0 +1,7 @@
+target/
+.git
+.gitignore
+*.md
+logo/
+bms.db
+db/

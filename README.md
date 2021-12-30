@@ -16,6 +16,7 @@ Live Bot : [@TellMyShow_bot](https://t.me/TellMyShow_bot)
 
 ## Setup your own
 
+### Locally
 - Ensure Rust is installed [Link](https://www.rust-lang.org/tools/install)
 - Get token from [@BotFather](https://telegram.me/BotFather)
 - `
@@ -23,6 +24,14 @@ sudo apt install build-essential pkg-config libssl-dev libsqlite3-dev jq
 `
 ```bash
 export TELOXIDE_TOKEN=<Token from BotFather>
-source update_play_store_version.sh # Or manually : export BMS_APP_VERSION=9.7.0
+export BMS_APP_VERSION=9.7.0
+source update_play_store_version.sh
 cargo run --release
 ```
+
+### Using Docker
+- Ensure docker, docker-compose is installed
+- `export TELOXIDE_TOKEN=<Token from BotFather>`
+- `export BMS_APP_VERSION=9.7.0`
+- `source update_play_store_version.sh`
+- `docker-compose --env-file /dev/null up`

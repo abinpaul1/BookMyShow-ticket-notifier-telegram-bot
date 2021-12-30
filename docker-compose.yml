@@ -1,0 +1,16 @@
+version: '3.5'
+
+services:
+  notifier-tbot-service:
+    container_name: notifier-tbot-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - db_vol:/db
+    environment:
+      - TELOXIDE_TOKEN=${TELOXIDE_TOKEN}
+      - BMS_APP_VERSION=${BMS_APP_VERSION}
+    restart: always
+volumes:
+  db_vol:

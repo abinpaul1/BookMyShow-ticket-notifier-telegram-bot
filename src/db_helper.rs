@@ -38,7 +38,7 @@ pub struct DbHelper{
 
 impl DbHelper{
     pub fn new() -> Self{
-        let conn = Connection::open("bms.db").unwrap();
+        let conn = Connection::open("db/bms.db").unwrap();
 
         // The handler will sleep multiple times for sum total of 5 seconds
         // when SQLITE_BUSY error is returned. This happens when db is opened 

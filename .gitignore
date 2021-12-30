@@ -1,3 +1,3 @@
-/target
-bms.db
+target/
+db/bms.db
 .env
