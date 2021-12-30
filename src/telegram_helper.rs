@@ -85,7 +85,7 @@ impl TgBot {
                 /list_venues <location_code> - List all available venues at given location\n\n \
                 /enroll <movie_code> <venue_code> <date_string> - Enroll for notification for given movie at given venue on given date\n \
                 Example Usage: /enroll ET00310790 PVKC 22-04-2021\n\n \
-                Moving Code is present in the URL of the movie's page on in.bookmyshow.com\n \
+                Movie Code is present in the URL of the movie's page on in.bookmyshow.com\n \
                 Sample URL with movie code : https://in.bookmyshow.com/kochi/movies/spider-man-no-way-home/ET00310790"
             .to_string();
         self.send_message(chat_id, &text).await
