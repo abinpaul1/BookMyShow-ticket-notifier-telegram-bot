@@ -13,6 +13,9 @@ use log::{info,warn,error};
 
 // IMPORTANT : Only Send back Telegram messages from functions that are solely triggered by user input
 
+// Max enrollments per user is 3
+const MAX_ALLOWED_ENROLLMENTS: usize = 3;
+
 pub struct Controller{
     tg_bot: TgBot,
     bms_helper: BmsHelper,
@@ -31,6 +34,21 @@ impl Controller{
     // Enroll a chat id into a list of hashmap of a given (movie,venue,date)
     pub async fn enroll_user(&mut self, chat_id: i64, movie_code: String, venue_code: String, date_str: String){
         info!("enroll_user: chat_id: {}, movie_code: {}, venue_code: {}, date: {}", chat_id, movie_code, venue_code, date_str);
+
+        // Check if user has already exceeded MAX_ALLOWED_ENROLLMENTS
+        let num_enrollments = match self.db_helper.get_number_enrollments(chat_id){
+            Ok(num_enrollments) => num_enrollments,
+            Err(e) => {
+                error!("Error in fetching number of enrollments from db {}", e);
+                self.tg_bot.send_message(chat_id, "Error : Internal error. Please try again").await.unwrap();
+                return;
+            }
+        };
+        if num_enrollments >= MAX_ALLOWED_ENROLLMENTS {
+            self.tg_bot.send_limited_enrollments_message(chat_id).await.unwrap();
+            return;
+        }
+        
         // Validate date and timeframe
         if !is_valid_date_string(&date_str) {
             self.tg_bot.send_message(chat_id, "Error : Provided date format is invalid").await.unwrap();

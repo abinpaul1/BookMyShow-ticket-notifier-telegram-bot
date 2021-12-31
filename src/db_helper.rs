@@ -157,6 +157,11 @@ impl DbHelper{
         stmt.query_row([venue_code], |row| row.get(0))
     }
 
+    pub fn get_number_enrollments(&self, chat_id: i64) -> Result<usize>{
+        info!("get_number_enrollments: {:?}", chat_id);
+        let mut stmt = self.conn.prepare("SELECT COUNT(*) FROM event_users WHERE chat_id = ?").unwrap();
+        stmt.query_row([&chat_id], |row| row.get(0))
+    }
 
     fn init_tables(conn: &Connection) -> Result<()>{
         info!("Initializing tables");

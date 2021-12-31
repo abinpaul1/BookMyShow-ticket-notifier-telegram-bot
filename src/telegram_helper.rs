@@ -93,11 +93,23 @@ impl TgBot {
                 /list_venues <location_code> - List all available venues at given location\n\n \
                 /enroll <movie_code> <venue_code> <date_string> - Enroll for notification for given movie at given venue on given date\n\n \
                 - Example Usage: /enroll ET00310790 PVKC 22-04-2021\n\n \
-                - Venue Code can be obtained using above list venues command\n\n \
+                - Venue Code can be obtained using above list_venues command\n\n \
                 - Date string should be in DD-MM-YYYY format\n\n \
                 - Movie Code is present in the URL of the movie's page on in.bookmyshow.com. \n\n \
-                - Sample URL with movie code at end: https://in.bookmyshow.com/kochi/movies/spider-man-no-way-home/ET00310790"
+                - Sample URL with movie code at end: https://in.bookmyshow.com/kochi/movies/spider-man-no-way-home/ET00310790\n\n \
+                NOTE : Each user can have a maximum of 2 enrollments"
             .to_string();
+        text = self.escape_out_special_characters(&text);
+        self.send_message(chat_id, &text).await
+    }
+
+    pub async fn send_limited_enrollments_message(&self, chat_id: i64) -> Result<(), RequestError> {
+        let mut text = "Sorry! It seems you are already waiting for maximum allowed shows. \n\n\
+                        Due to large number of users we can't let you enroll for more. \
+                        You can enroll for more, once these shows start booking or the date is past. \n\n\
+                        Rest assured, you will be notified as soon as booking opens for the shows you enrolled for. So technically you are \
+                        already guaranteed to get your favourite seats at your favourite venue 🙃."
+                    .to_string();
         text = self.escape_out_special_characters(&text);
         self.send_message(chat_id, &text).await
     }
