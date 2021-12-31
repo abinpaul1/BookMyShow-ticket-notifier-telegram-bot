@@ -5,6 +5,9 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[profile.release]
+panic = "abort"
+
 [dependencies]
 teloxide = "0.5"
 log = "0.4"

@@ -37,13 +37,14 @@ async fn run() {
     // Controller for polling bms every 5 minutes using tokio spawn
     let tg_bot = telegram_helper::TgBot::new(bot.clone());
     let mut controller = notification_controller::Controller::new(tg_bot);
-    tokio::spawn(async move {
+
+    let poller = async move {
         loop {
-            // Poll bms every 5 minutes
-            sleep(Duration::from_secs(300)).await;
+            sleep(Duration::from_secs(360)).await;
             controller.poll_bms().await;
         }
-    });
+    };
+    tokio::spawn(poller);
 
 
 

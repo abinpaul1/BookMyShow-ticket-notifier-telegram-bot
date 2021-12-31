@@ -167,7 +167,13 @@ impl Controller{
     // Does a check if the events in waiting list have shows now
     pub async fn poll_bms(&mut self){
         info!("poll_bms called at {}", chrono::Local::now());
-        let waiting_list = self.db_helper.get_all_events_and_users().unwrap();
+        let waiting_list = match self.db_helper.get_all_events_and_users(){
+            Ok(wl) => wl,
+            Err(e) => {
+                error!("Error while getting waiting list from db: {:?}", e);
+                return
+            }
+        };
         // For each event in waiting list
         // Make request using venue code and date
         // If movie is present in response, notify all users in waiting list
@@ -187,7 +193,13 @@ impl Controller{
             }
 
 
-            let available_movies = self.bms_helper.api_get_movies_at_venue(venue_code, date_string).await.unwrap();
+            let available_movies = match self.bms_helper.api_get_movies_at_venue(venue_code, date_string).await{
+                Ok(movies) => movies,
+                Err(e) => {
+                    error!("poll_bms: Error getting movies at venue : {:?} ", e);
+                    continue;
+                }
+            };
             
             // If returned list contains movie name, notify all users in waiting list
             // Fuzzy matching :  > 0.75 percent match on name
