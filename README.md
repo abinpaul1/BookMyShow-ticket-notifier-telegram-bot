@@ -35,3 +35,10 @@ cargo run --release
 - `export BMS_APP_VERSION=9.7.0`
 - `source update_play_store_version.sh`
 - `docker-compose --env-file /dev/null up`
+    
+## FAO
+    
+    1. How to get notified for cities other than the list mentioned ?
+    
+    Visit this link : https://in.bookmyshow.com/api/explore/de/regions
+    Search for your city name, you can use the corresponding `RegionCode` in /list_venues command.
