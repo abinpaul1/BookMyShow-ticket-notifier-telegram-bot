@@ -4,6 +4,8 @@
 
 Live Bot : [@TellMyShow_bot](https://t.me/TellMyShow_bot)
 
+Update : Live Bot has been disabled because BookMyShow blocked IP of server from which bot was operating. Please run your own bot using instructions mentioned below
+
 ## Available Commands
 - <strong>/wl</strong> - Get your waiting list
 - <strong>/list_locations</strong> - List all available locations
