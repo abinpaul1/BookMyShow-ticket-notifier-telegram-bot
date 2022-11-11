@@ -21,8 +21,8 @@ impl BmsHelper{
             // TODO : Update app version, code - play store version
             app_version,
             app_version_code,
-            bms_id_prefix : "1.58091598.".to_string(),
-            token : "67x1xa33b4x422b361ba".to_string()
+            bms_id_prefix : "1.58092784.".to_string(),
+            token : "67x1xa33b4x432a352bb".to_string()
         }
     }
 
@@ -65,7 +65,7 @@ impl BmsHelper{
             }
         }
         else{
-            warn!("ShowDetails was empty for venue: {}", venue_code);
+            info!("ShowDetails was empty for venue: {}", venue_code);
         }
         Ok(movies)
     }
@@ -90,10 +90,13 @@ impl BmsHelper{
 
         // Parse response and return a vector of tuple of venue name and venue code
         let mut venues: Vec<(String, String)> = Vec::new();
-        for venue in resp["BookMyShow"]["arrVenue"].as_array().unwrap() {
-            let venue_name = venue["VenueName"].as_str().unwrap().to_string();
-            let venue_code = venue["VenueCode"].as_str().unwrap().to_string();
-            venues.push((venue_name, venue_code));
+        if let Some(available_venues) = resp["BookMyShow"]["arrVenue"].as_array() {
+            for venue in available_venues{
+                let venue_name = venue["VenueName"].as_str().unwrap().to_string();
+                let venue_code = venue["VenueCode"].as_str().unwrap().to_string();
+                venues.push((venue_name, venue_code));
+            }
+        } else {
         }
 
         Ok(venues)

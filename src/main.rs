@@ -4,17 +4,18 @@ use teloxide::dispatching::update_listeners::{
 };
 use teloxide::types::UpdateKind;
 use tokio::time::{sleep, Duration};
-use log::{info,warn,error};
-
 mod notification_controller;
 mod telegram_helper;
 mod bms_helper;
 mod db_helper;
 mod utils;
 
+extern crate pretty_env_logger;
+#[macro_use] extern crate log;
 
 #[tokio::main]
 async fn main() {
+    pretty_env_logger::init();
     run().await;
 }
 
@@ -29,7 +30,7 @@ fn parse_user_command(message: &str) -> Option<(&str, Vec<&str>)> {
 
 
 async fn run() {
-    teloxide::enable_logging!();
+    // teloxide::enable_logging!();
     log::info!("Starting TellMyShow Bot...");
 
     let bot = Bot::from_env();
@@ -71,7 +72,7 @@ async fn run() {
                                     match controller.list_locations(chat_id).await{
                                         Ok(()) => {},
                                         Err(e) => {
-                                            error!("Error in /list_locations: {}", e);
+                                            info!("Error in /list_locations: {}", e);
                                             dbg!(e);
                                         }
                                     }
@@ -80,14 +81,14 @@ async fn run() {
                                     // Command is of the form "/list_venues <location_code>"
                                     if args.len() != 1 {
                                         // Send back error message and return
-                                        warn!("/list_venues Invalid Arguments");
+                                        info!("/list_venues Invalid Arguments");
                                         controller.send_help_message(chat_id).await;
                                         return controller;
                                     }
                                     match controller.list_venues_for_location(chat_id, &args[0].to_uppercase()).await{
                                         Ok(()) => {},
                                         Err(e) => {
-                                            error!("Error in /list_venues: {}", e);
+                                            info!("Error in /list_venues: {}", e);
                                             dbg!(e);
                                         }
                                     };
@@ -96,7 +97,7 @@ async fn run() {
                                     // Command is of the form "/enroll <movie_code> <venue_code> <date_string>"    
                                     if args.len() != 3 {
                                         // Send back error message and return
-                                        warn!("/enroll Invalid Arguments");
+                                        info!("/enroll Invalid Arguments");
                                         controller.send_help_message(chat_id).await;
                                         return controller;
                                     }
@@ -108,7 +109,7 @@ async fn run() {
                                     match controller.get_waiting_list_for_user(chat_id).await{
                                         Ok(()) => {},
                                         Err(e) => {
-                                            error!("Error in /wl: {}", e);
+                                            info!("Error in /wl: {}", e);
                                             dbg!(e);
                                         }
                                     }                        
@@ -122,22 +123,22 @@ async fn run() {
                         },
                         None => {
                             // Handle non-text message
-                            warn!("Non-text message received");
+                            info!("Non-text message received");
                         }
                     }
                 },
                 UpdateKind::CallbackQuery(_callback_query) => {
                     // Handle callback query
-                    warn!("UpdateKind::CallbackQuery received");
+                    info!("UpdateKind::CallbackQuery received");
                 },
                 _ => {
                     // Handle other kinds of updates
-                    warn!("UpdateKind::Other received");
+                    info!("UpdateKind::Other received");
                 }
             },
             _ => {
                 // Err handling
-                error!("Error in update received");
+                error!("Error in update received from telegram stream");
             }
         }
         controller

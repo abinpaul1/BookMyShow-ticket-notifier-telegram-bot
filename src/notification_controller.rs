@@ -172,7 +172,7 @@ impl Controller{
                 // If venue name not found, we use venue code as venue name
                 Ok(venue_name) => venue_name,
                 Err(_) => {
-                    error!("Venue name not found for venue {:?}", event.venue_code);    
+                    info!("Venue name not found for venue {:?}", event.venue_code);    
                     event.venue_code.clone()
                 }
             };
@@ -184,7 +184,7 @@ impl Controller{
 
     // Does a check if the events in waiting list have shows now
     pub async fn poll_bms(&mut self){
-        info!("poll_bms called at {}", chrono::Local::now());
+        warn!("poll_bms called at {}", chrono::Local::now());
         let waiting_list = match self.db_helper.get_all_events_and_users(){
             Ok(wl) => wl,
             Err(e) => {
@@ -202,7 +202,7 @@ impl Controller{
 
             // If date is past, remove from waiting list
             if is_date_in_past(date_string){
-                warn!("poll_bms: Event is in past, removing from waiting list: {:?}", event);
+                info!("poll_bms: Event is in past, removing from waiting list: {:?}", event);
                 match self.db_helper.remove_event(event){
                     Ok(_) => (),
                     Err(e) => error!("poll_bms: Error removing event from DB: {:?}", e),
